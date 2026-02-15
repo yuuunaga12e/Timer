@@ -1,0 +1,186 @@
+:root {
+  --notion-bg: #FFFFFF;
+  --notion-text: #37352F;
+  --notion-gray: #F1F1EF;
+  --notion-border: #E1E1E0;
+  --notion-blue: #2EAADC;
+  --notion-red: #E03E3E;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--notion-bg);
+}
+
+.timer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  color: var(--notion-text);
+  background-color: var(--notion-bg);
+  background-size: cover;
+  background-position: center;
+  transition: background-image 0.3s ease-in-out;
+}
+
+.overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.overlay.has-bg {
+  background-color: rgba(255, 255, 255, 0.4);
+  /* Glassmorphism effect */
+  backdrop-filter: blur(2px);
+}
+
+.settings-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  opacity: 0.3;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.settings-toggle:hover {
+  opacity: 1;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.settings-panel {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: rgba(15, 15, 15, 0.1) 0px 4px 12px;
+  width: 280px;
+  z-index: 20;
+  border: 1px solid var(--notion-border);
+}
+
+.settings-panel h3 {
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+  color: var(--notion-text);
+}
+
+.setting-item {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.setting-item label {
+  font-size: 0.8rem;
+  color: rgba(55, 53, 47, 0.65);
+}
+
+.setting-item input[type="text"] {
+  padding: 6px;
+  border: 1px solid var(--notion-border);
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.setting-item input[type="file"] {
+  font-size: 0.8rem;
+}
+
+.clear-bg-btn {
+  width: 100%;
+  color: var(--notion-red);
+  border-color: rgba(224, 62, 62, 0.2);
+}
+
+h1 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--notion-text);
+  opacity: 0.8;
+}
+
+.time-display {
+  font-size: 5rem;
+  font-weight: 700;
+  margin: 10px 0 20px 0;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.adjust-buttons,
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 6px 12px;
+  cursor: pointer;
+  border: 1px solid rgba(55, 53, 47, 0.16);
+  border-radius: 4px;
+  background-color: transparent;
+  color: var(--notion-text);
+  transition: background-color 0.1s ease-in;
+  font-weight: 500;
+  box-shadow: rgba(15, 15, 15, 0.05) 0px 1px 2px;
+}
+
+button:hover {
+  background-color: var(--notion-gray);
+}
+
+button:active {
+  background-color: rgba(55, 53, 47, 0.08);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* Specific styles for primary actions if needed, though Notion keeps it simple */
+.start-btn {
+  /* color: var(--notion-blue); */
+  /* border-color: rgba(46, 170, 220, 0.3); */
+}
+
+.stop-btn {
+  color: var(--notion-red);
+  border-color: rgba(224, 62, 62, 0.3);
+}
+
+.stop-btn:hover {
+  background-color: rgba(224, 62, 62, 0.05);
+}
