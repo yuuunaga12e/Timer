@@ -7,6 +7,7 @@ function App() {
   const [bgImage, setBgImage] = useState<string>('')
   const [showSettings, setShowSettings] = useState(false)
   const [title, setTitle] = useState('Focus Timer')
+  const [soundType, setSoundType] = useState('beep')
 
   useEffect(() => {
     const savedBg = localStorage.getItem('timer_bg')
@@ -14,6 +15,9 @@ function App() {
 
     const savedTitle = localStorage.getItem('timer_title')
     if (savedTitle) setTitle(savedTitle)
+
+    const savedSound = localStorage.getItem('timer_sound')
+    if (savedSound) setSoundType(savedSound)
   }, [])
 
   useEffect(() => {
@@ -24,7 +28,7 @@ function App() {
           if (prevTime <= 1) {
             clearInterval(intervalId)
             setIsRunning(false)
-            playSound()
+            playSound(soundType)
             return 0
           }
           return prevTime - 1
@@ -34,9 +38,9 @@ function App() {
       clearInterval(intervalId)
     }
     return () => clearInterval(intervalId)
-  }, [isRunning, timeLeft])
+  }, [isRunning, timeLeft, soundType])
 
-  const playSound = () => {
+  const playSound = (type: string) => {
     try {
       const AudioContext = window.AudioContext || (window as any).webkitAudioContext
       if (!AudioContext) return
@@ -48,15 +52,48 @@ function App() {
       osc.connect(gainNode)
       gainNode.connect(ctx.destination)
 
-      osc.type = 'sine'
-      osc.frequency.setValueAtTime(880, ctx.currentTime) // A5
-      osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.5)
+      const now = ctx.currentTime
 
-      gainNode.gain.setValueAtTime(0.1, ctx.currentTime)
-      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5)
+      if (type === 'chime') {
+        // Gentle Chime: Higher pitch, long decay
+        osc.type = 'sine'
+        osc.frequency.setValueAtTime(880, now) // A5
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.1)
 
-      osc.start()
-      osc.stop(ctx.currentTime + 0.5)
+        gainNode.gain.setValueAtTime(0, now)
+        gainNode.gain.linearRampToValueAtTime(0.3, now + 0.05) // Soft attack
+        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 2.0) // Long release
+
+        osc.start(now)
+        osc.stop(now + 2.0)
+      } else if (type === 'digital') {
+        // Digital Alarm: Square wave, short pulses
+        osc.type = 'square'
+        osc.frequency.setValueAtTime(660, now) // E5
+
+        // Pulse pattern
+        gainNode.gain.setValueAtTime(0.1, now)
+        gainNode.gain.setValueAtTime(0.1, now + 0.1)
+        gainNode.gain.setValueAtTime(0, now + 0.1)
+        gainNode.gain.setValueAtTime(0, now + 0.2)
+        gainNode.gain.setValueAtTime(0.1, now + 0.2)
+        gainNode.gain.setValueAtTime(0.1, now + 0.3)
+        gainNode.gain.setValueAtTime(0, now + 0.3)
+
+        osc.start(now)
+        osc.stop(now + 0.4)
+      } else {
+        // Simple Beep (Default)
+        osc.type = 'sine'
+        osc.frequency.setValueAtTime(880, now) // A5
+        osc.frequency.exponentialRampToValueAtTime(440, now + 0.5)
+
+        gainNode.gain.setValueAtTime(0.1, now)
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5)
+
+        osc.start(now)
+        osc.stop(now + 0.5)
+      }
     } catch (error) {
       console.error('Audio playback failed:', error)
     }
