@@ -5,13 +5,18 @@ function App() {
   const [timeLeft, setTimeLeft] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
   const [bgImage, setBgImage] = useState<string>('')
+  const [doneBgImage, setDoneBgImage] = useState<string>('')
   const [showSettings, setShowSettings] = useState(false)
   const [title, setTitle] = useState('Focus Timer')
   const [soundType, setSoundType] = useState('beep')
+  const [isDone, setIsDone] = useState(false)
 
   useEffect(() => {
     const savedBg = localStorage.getItem('timer_bg')
     if (savedBg) setBgImage(savedBg)
+
+    const savedDoneBg = localStorage.getItem('timer_done_bg')
+    if (savedDoneBg) setDoneBgImage(savedDoneBg)
 
     const savedTitle = localStorage.getItem('timer_title')
     if (savedTitle) setTitle(savedTitle)
@@ -28,6 +33,7 @@ function App() {
           if (prevTime <= 1) {
             clearInterval(intervalId)
             setIsRunning(false)
+            setIsDone(true)
             playSound(soundType)
             return 0
           }
@@ -106,15 +112,18 @@ function App() {
   }
 
   const handleStart = () => {
+    setIsDone(false)
     if (timeLeft > 0) setIsRunning(true)
   }
   const handleStop = () => setIsRunning(false)
   const handleReset = () => {
     setIsRunning(false)
+    setIsDone(false)
     setTimeLeft(0)
   }
 
   const handleAddFiveMinutes = () => {
+    setIsDone(false)
     setTimeLeft((prevTime) => {
       const newTime = prevTime + 5 * 60
       return newTime > 90 * 60 ? 90 * 60 : newTime
@@ -141,13 +150,26 @@ function App() {
     }
   }
 
+  const handleDoneFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const result = reader.result as string
+        setDoneBgImage(result)
+        localStorage.setItem('timer_done_bg', result)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
 
   return (
     <div
       className="timer-container"
-      style={bgImage ? { backgroundImage: `url(${bgImage})` } : {}}
+      style={(isDone && doneBgImage) ? { backgroundImage: `url(${doneBgImage})` } : (bgImage ? { backgroundImage: `url(${bgImage})` } : {})}
     >
-      <div className={`overlay ${bgImage ? 'has-bg' : ''}`}>
+      <div className={`overlay ${((isDone && doneBgImage) || bgImage) ? 'has-bg' : ''}`}>
         <button
           className="settings-toggle"
           onClick={() => setShowSettings(!showSettings)}
@@ -194,7 +216,7 @@ function App() {
               </select>
             </div>
             <div className="setting-item">
-              <label>Background Image:</label>
+              <label>Background Image (Default):</label>
               <input
                 type="file"
                 accept="image/*"
@@ -202,14 +224,24 @@ function App() {
               />
             </div>
             <div className="setting-item">
+              <label>Background Image (Done):</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleDoneFileChange}
+              />
+            </div>
+            <div className="setting-item">
               <button
                 className="clear-bg-btn"
                 onClick={() => {
                   setBgImage('')
+                  setDoneBgImage('')
                   localStorage.removeItem('timer_bg')
+                  localStorage.removeItem('timer_done_bg')
                 }}
               >
-                Clear Background
+                Clear All Backgrounds
               </button>
             </div>
           </div>
