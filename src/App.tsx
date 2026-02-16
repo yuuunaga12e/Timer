@@ -6,10 +6,14 @@ function App() {
   const [isRunning, setIsRunning] = useState(false)
   const [bgImage, setBgImage] = useState<string>('')
   const [showSettings, setShowSettings] = useState(false)
+  const [title, setTitle] = useState('Focus Timer')
 
   useEffect(() => {
     const savedBg = localStorage.getItem('timer_bg')
     if (savedBg) setBgImage(savedBg)
+
+    const savedTitle = localStorage.getItem('timer_title')
+    if (savedTitle) setTitle(savedTitle)
   }, [])
 
   useEffect(() => {
@@ -116,8 +120,18 @@ function App() {
         </button>
 
         {showSettings && (
-          <div className="settings-panel">
-            <h3>Background Image</h3>
+        <div className="setting-item">
+              <label>Title:</label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => {
+                  setTitle(e.target.value)
+                  localStorage.setItem('timer_title', e.target.value)
+                }}
+                placeholder="Enter title..."
+              />
+            </div>
             <div className="setting-item">
               <label>Upload File:</label>
               <input
@@ -140,24 +154,24 @@ function App() {
           </div>
         )}
 
-        <h1>Simple Timer</h1>
-        <div className="time-display">{formatTime(timeLeft)}</div>
-        <div className="controls">
-          <div className="adjust-buttons">
-            <button onClick={handleRemoveFiveMinutes} disabled={isRunning || timeLeft === 0}>-5 min</button>
-            <button onClick={handleAddFiveMinutes} disabled={isRunning}>+5 min</button>
-          </div>
-          <div className="action-buttons">
-            {!isRunning ? (
-              <button className="start-btn" onClick={handleStart} disabled={timeLeft === 0}>Start</button>
-            ) : (
-              <button className="stop-btn" onClick={handleStop}>Stop</button>
-            )}
-            <button onClick={handleReset}>Reset</button>
-          </div>
+      <h1>{title}</h1>
+      <div className="time-display">{formatTime(timeLeft)}</div>
+      <div className="controls">
+        <div className="adjust-buttons">
+          <button onClick={handleRemoveFiveMinutes} disabled={isRunning || timeLeft === 0}>-5 min</button>
+          <button onClick={handleAddFiveMinutes} disabled={isRunning}>+5 min</button>
+        </div>
+        <div className="action-buttons">
+          {!isRunning ? (
+            <button className="start-btn" onClick={handleStart} disabled={timeLeft === 0}>Start</button>
+          ) : (
+            <button className="stop-btn" onClick={handleStop}>Stop</button>
+          )}
+          <button onClick={handleReset}>Reset</button>
         </div>
       </div>
     </div>
+    </div >
   )
 }
 
