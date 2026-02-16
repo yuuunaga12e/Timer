@@ -120,7 +120,9 @@ function App() {
         </button>
 
         {showSettings && (
-        <div className="setting-item">
+          <div className="settings-panel">
+            <h3>Settings</h3>
+            <div className="setting-item">
               <label>Title:</label>
               <input
                 type="text"
@@ -133,7 +135,7 @@ function App() {
               />
             </div>
             <div className="setting-item">
-              <label>Upload File:</label>
+              <label>Background Image:</label>
               <input
                 type="file"
                 accept="image/*"
@@ -154,23 +156,23 @@ function App() {
           </div>
         )}
 
-      <h1>{title}</h1>
-      <div className="time-display">{formatTime(timeLeft)}</div>
-      <div className="controls">
-        <div className="adjust-buttons">
-          <button onClick={handleRemoveFiveMinutes} disabled={isRunning || timeLeft === 0}>-5 min</button>
-          <button onClick={handleAddFiveMinutes} disabled={isRunning}>+5 min</button>
-        </div>
-        <div className="action-buttons">
-          {!isRunning ? (
-            <button className="start-btn" onClick={handleStart} disabled={timeLeft === 0}>Start</button>
-          ) : (
-            <button className="stop-btn" onClick={handleStop}>Stop</button>
-          )}
-          <button onClick={handleReset}>Reset</button>
+        <h1>{title}</h1>
+        <div className="time-display">{formatTime(timeLeft)}</div>
+        <div className="controls">
+          <div className="adjust-buttons">
+            <button onClick={handleRemoveFiveMinutes} disabled={isRunning || timeLeft === 0}>-5 min</button>
+            <button onClick={handleAddFiveMinutes} disabled={isRunning}>+5 min</button>
+          </div>
+          <div className="action-buttons">
+            {!isRunning ? (
+              <button className="start-btn" onClick={handleStart} disabled={timeLeft === 0}>Start</button>
+            ) : (
+              <button className="stop-btn" onClick={handleStop}>Stop</button>
+            )}
+            <button onClick={handleReset}>Reset</button>
+          </div>
         </div>
       </div>
-    </div>
     </div >
   )
 }
