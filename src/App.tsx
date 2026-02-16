@@ -135,6 +135,28 @@ function App() {
               />
             </div>
             <div className="setting-item">
+              <label>Alarm Sound:</label>
+              <select
+                value={soundType}
+                onChange={(e) => {
+                  setSoundType(e.target.value)
+                  localStorage.setItem('timer_sound', e.target.value)
+                  playSound(e.target.value) // Preview sound
+                }}
+                style={{
+                  padding: '6px',
+                  width: '100%',
+                  borderRadius: '4px',
+                  border: '1px solid var(--notion-border)',
+                  fontSize: '0.85rem'
+                }}
+              >
+                <option value="beep">Simple Beep</option>
+                <option value="chime">Gentle Chime</option>
+                <option value="digital">Digital Alarm</option>
+              </select>
+            </div>
+            <div className="setting-item">
               <label>Background Image:</label>
               <input
                 type="file"
