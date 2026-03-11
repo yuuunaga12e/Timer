@@ -26,7 +26,7 @@ const indexHtml = join(process.env.DIST, 'index.html')
 async function createWindow() {
     win = new BrowserWindow({
         title: 'Focus Timer',
-        icon: join(process.env.VITE_PUBLIC, 'favicon.ico'),
+        icon: join(process.env.VITE_PUBLIC || '', 'favicon.ico'),
         webPreferences: {
             preload,
             // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
@@ -45,7 +45,7 @@ async function createWindow() {
 
     if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-plugin injects this
         // Load the url of the dev server if in development mode
-        await win.loadURL(url)
+        await win.loadURL(url!)
         // Open the DevTools.
         // win.webContents.openDevTools()
     } else {

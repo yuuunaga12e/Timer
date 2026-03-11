@@ -1,34 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap');
+
 :root {
-  --notion-bg: #FFFFFF;
-  --notion-text: #37352F;
-  --notion-gray: #F1F1EF;
-  --notion-border: #E1E1E0;
-  --notion-blue: #2EAADC;
-  --notion-red: #E03E3E;
+  /* Palette */
+  --bg: #0F0F11;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-hover: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #F0F0F2;
+  --text-dim: rgba(240, 240, 242, 0.45);
+  --text-mid: rgba(240, 240, 242, 0.7);
+
+  /* Mode colors */
+  --focus: #FF6B35;
+  --focus-glow: rgba(255, 107, 53, 0.15);
+  --break: #00D68F;
+  --break-glow: rgba(0, 214, 143, 0.15);
+  --done: #A855F7;
+  --done-glow: rgba(168, 85, 247, 0.15);
+
+  --ring-track: rgba(255, 255, 255, 0.06);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  padding: 0;
-  background-color: var(--notion-bg);
+  background: var(--bg);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-.timer-container {
+/* ─── App container ─── */
+.app {
+  width: 100vw;
+  height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  width: 100vw;
-  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-  color: var(--notion-text);
-  background-color: var(--notion-bg);
+  background-color: var(--bg);
   background-size: cover;
   background-position: center;
-  transition: background-image 0.3s ease-in-out;
+  transition: background-color 0.6s ease;
+  overflow: hidden;
 }
 
-.overlay {
+.app.mode-focus {
+  background-color: #0F0F11;
+}
+
+.app.mode-break {
+  background-color: #080F0D;
+}
+
+.app.mode-done {
+  background-color: #0D0A12;
+}
+
+.glass-layer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,151 +68,468 @@ body {
   width: 100%;
   height: 100%;
   position: relative;
-  transition: background-color 0.3s ease;
 }
 
-.overlay.has-bg {
-  background-color: rgba(255, 255, 255, 0.4);
-  /* Glassmorphism effect */
-  backdrop-filter: blur(2px);
+.glass-layer.has-bg {
+  background: rgba(15, 15, 17, 0.15);
 }
 
-.settings-toggle {
+/* ─── Settings ─── */
+.settings-btn {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 24px;
+  right: 24px;
   background: none;
   border: none;
-  font-size: 1.5rem;
-  opacity: 0.3;
-  transition: opacity 0.2s;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s;
   z-index: 10;
 }
 
-.settings-toggle:hover {
-  opacity: 1;
-  background-color: transparent;
+.settings-btn:hover {
+  color: var(--text);
+  background: var(--surface-hover);
+  transform: none;
   box-shadow: none;
 }
 
 .settings-panel {
   position: absolute;
-  top: 60px;
-  right: 20px;
-  background: white;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: rgba(15, 15, 15, 0.1) 0px 4px 12px;
-  width: 280px;
+  top: 64px;
+  right: 24px;
+  width: 300px;
+  background: #1A1A1E;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
   z-index: 20;
-  border: 1px solid var(--notion-border);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: slideIn 0.2s ease;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
-.settings-panel h3 {
-  margin: 0 0 12px 0;
-  font-size: 0.9rem;
-  color: var(--notion-text);
-}
-
-.setting-item {
-  margin-bottom: 12px;
+.settings-header {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.setting-item label {
-  font-size: 0.8rem;
-  color: rgba(55, 53, 47, 0.65);
-}
-
-.setting-item input[type="text"] {
-  padding: 6px;
-  border: 1px solid var(--notion-border);
-  border-radius: 4px;
-  font-size: 0.85rem;
-}
-
-.setting-item input[type="file"] {
-  font-size: 0.8rem;
-}
-
-.clear-bg-btn {
-  width: 100%;
-  color: var(--notion-red);
-  border-color: rgba(224, 62, 62, 0.2);
-}
-
-h1 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--notion-text);
-  opacity: 0.8;
-}
-
-.time-display {
-  font-size: 5rem;
-  font-weight: 700;
-  margin: 10px 0 20px 0;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  letter-spacing: -2px;
-}
-
-.controls {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 20px;
 }
 
-.adjust-buttons,
-.action-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-button {
-  font-family: inherit;
+.settings-header h3 {
   font-size: 0.9rem;
-  padding: 6px 12px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1.4rem;
   cursor: pointer;
-  border: 1px solid rgba(55, 53, 47, 0.16);
-  border-radius: 4px;
-  background-color: transparent;
-  color: var(--notion-text);
-  transition: background-color 0.1s ease-in;
-  font-weight: 500;
-  box-shadow: rgba(15, 15, 15, 0.05) 0px 1px 2px;
+  padding: 0;
+  line-height: 1;
 }
 
-button:hover {
-  background-color: var(--notion-gray);
-}
-
-button:active {
-  background-color: rgba(55, 53, 47, 0.08);
-}
-
-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  background-color: transparent;
+.close-btn:hover {
+  color: var(--text);
+  background: none;
+  transform: none;
   box-shadow: none;
 }
 
-/* Specific styles for primary actions if needed, though Notion keeps it simple */
-.start-btn {
-  /* color: var(--notion-blue); */
-  /* border-color: rgba(46, 170, 220, 0.3); */
+.setting-group {
+  margin-bottom: 16px;
 }
 
-.stop-btn {
-  color: var(--notion-red);
-  border-color: rgba(224, 62, 62, 0.3);
+.setting-group label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
 }
 
-.stop-btn:hover {
-  background-color: rgba(224, 62, 62, 0.05);
+.setting-group input[type="text"],
+.setting-group input[type="number"],
+.setting-group select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.setting-group input:focus,
+.setting-group select:focus {
+  border-color: var(--focus);
+}
+
+.setting-group input:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.setting-group input[type="file"] {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.setting-row {
+  display: flex;
+  gap: 12px;
+}
+
+.setting-group.half {
+  flex: 1;
+}
+
+.danger-btn {
+  width: 100%;
+  padding: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 10px;
+  color: #EF4444;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.danger-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ─── Title ─── */
+.app-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.7),
+    0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ─── Mode badge ─── */
+.mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  backdrop-filter: blur(8px);
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  animation: fadeUp 0.4s ease;
+}
+
+.mode-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: pulse 2s ease infinite;
+}
+
+.mode-badge.mode-focus {
+  background: rgba(255, 107, 53, 0.25);
+  color: var(--focus);
+  border: 1px solid rgba(255, 107, 53, 0.3);
+}
+
+.mode-badge.mode-focus .mode-dot {
+  background: var(--focus);
+  box-shadow: 0 0 8px var(--focus);
+}
+
+.mode-badge.mode-break {
+  background: rgba(0, 214, 143, 0.25);
+  color: var(--break);
+  border: 1px solid rgba(0, 214, 143, 0.3);
+}
+
+.mode-badge.mode-break .mode-dot {
+  background: var(--break);
+  box-shadow: 0 0 8px var(--break);
+}
+
+.mode-badge.mode-done {
+  background: rgba(168, 85, 247, 0.25);
+  color: var(--done);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.mode-badge.mode-done .mode-dot {
+  background: var(--done);
+  box-shadow: 0 0 8px var(--done);
+}
+
+/* ─── Timer ring ─── */
+.ring-container {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ring-track {
+  fill: none;
+  stroke: var(--ring-track);
+  stroke-width: 4;
+}
+
+.ring-fill {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.8s ease, stroke 0.6s ease;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.1));
+}
+
+.ring-fill.mode-focus {
+  stroke: var(--focus);
+  filter: drop-shadow(0 0 10px rgba(255, 107, 53, 0.4));
+}
+
+.ring-fill.mode-break {
+  stroke: var(--break);
+  filter: drop-shadow(0 0 10px rgba(0, 214, 143, 0.4));
+}
+
+.ring-fill.mode-done {
+  stroke: var(--done);
+  filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.4));
+}
+
+.ring-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+}
+
+.timer-digits {
+  font-family: 'Inter', sans-serif;
+  font-size: 4.5rem;
+  font-weight: 200;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -4px;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+.set-label {
+  font-size: 0.75rem;
+  color: #fff;
+  font-weight: 600;
+  margin-top: 8px;
+  letter-spacing: 0.04em;
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.6),
+    0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Set dots ─── */
+.dots-row {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ring-track);
+  transition: all 0.3s ease;
+}
+
+.dot.current.mode-focus {
+  background: var(--focus);
+  box-shadow: 0 0 10px rgba(255, 107, 53, 0.6);
+  transform: scale(1.3);
+}
+
+.dot.current.mode-break {
+  background: var(--break);
+  box-shadow: 0 0 10px rgba(0, 214, 143, 0.6);
+  transform: scale(1.3);
+}
+
+.dot.done {
+  background: var(--done);
+  box-shadow: 0 0 6px rgba(168, 85, 247, 0.4);
+}
+
+/* ─── Controls ─── */
+.controls-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.config-summary {
+  font-size: 0.85rem;
+  color: #fff;
+  font-weight: 600;
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.6),
+    0 2px 10px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.02em;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* Base button reset */
+button {
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.primary-btn {
+  padding: 14px 40px;
+  background: var(--focus);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 14px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+}
+
+.primary-btn:hover {
+  background: #E55A28;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(255, 107, 53, 0.4);
+}
+
+.primary-btn:active {
+  transform: translateY(0);
+}
+
+.control-btn {
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.control-btn:hover {
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.control-btn.pause {
+  color: var(--focus);
+  border-color: rgba(255, 107, 53, 0.4);
+  background: rgba(255, 107, 53, 0.15);
+  text-shadow: 0 1px 6px rgba(255, 107, 53, 0.3);
+}
+
+.control-btn.resume {
+  color: var(--break);
+  border-color: rgba(0, 214, 143, 0.4);
+  background: rgba(0, 214, 143, 0.15);
+  text-shadow: 0 1px 6px rgba(0, 214, 143, 0.3);
+}
+
+/* ─── Done state ─── */
+.done-area {
+  gap: 8px;
+}
+
+.done-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--done);
+  letter-spacing: 0.01em;
+}
+
+.done-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+/* ─── Animations ─── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
